@@ -264,3 +264,131 @@ we can also use `cargo doc` to generate documentation for the entire project, in
 
 - `//!` is used to write documentation comments at the crate level, which will be included in the generated documentation. ( inner documentation) , it is the root of the crate as nothing comes before it.
 - `rustdoc` can create doc from readme files as well .
+
+### Installation and Setup
+
+- Install Rust using `rustup`, which is the recommended way to install Rust and its associated tools.
+- `rustup` manages Rust versions and toolchains, allowing you to easily switch between different versions of Rust.
+- To install Rust, run the following command in your terminal:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup install stable
+rustup component add rustfmt clippy
+cargo install cargo-edit cargo-watch cargo-bench rustlings
+
+
+```
+
+- This command downloads and runs the Rust installation script, which will guide you through the installation process.
+- After installation, you can verify that Rust is installed correctly by running:
+
+```bash
+rustc --version
+```
+
+- This command will display the version of the Rust compiler (`rustc`) that is installed on your system.
+- You can also check the version of `cargo`, the Rust package manager, by running:
+
+```bash
+cargo --version
+```
+
+- This command will display the version of `cargo` that is installed on your system.
+
+```
+Install these VS Code Extensions:
+rust-analyzer (main LSP)
+Better TOML
+CodeLLDB (for debugging)
+Crates (shows crate versions inline)
+```
+
+- To create a new Rust project, use the `cargo` command:
+
+```bash
+cargo new my_project
+cd my_project
+```
+
+- This will create a new directory called `my_project` with a basic Rust project structure, including a `Cargo.toml` file for managing dependencies and a `src/main.rs` file for your main Rust code.
+- You can then build and run your project using:
+
+```bash
+cargo run
+// or
+cargo run --bin name
+```
+
+- This command will compile your Rust code and execute the resulting binary.
+- To build the project without running it, use:
+
+```bash
+cargo build
+```
+
+- can use -q flag to suppress output
+- To run tests, use:
+
+```bash
+cargo test
+```
+
+- This command will run any tests defined in your Rust code and display the results.
+- To format your code according to Rust's style guidelines, use:
+
+```bash
+cargo fmt
+```
+
+- This command will automatically format your Rust code, making it more readable and consistent with Rust's style conventions.
+- To check your code for common mistakes and improve its quality, use:
+
+```bash
+cargo clippy
+```
+
+- This command will run the Clippy linter, which provides suggestions for improving your Rust code
+- To manage dependencies, you can add them to your `Cargo.toml` file under the `[dependencies]` section. For example:
+
+```toml
+[dependencies]
+serde = "1.0" # Add the serde crate for serialization/deserialization
+```
+
+- After adding dependencies, you can run `cargo build` to download and compile them.
+- To update dependencies, use:
+
+```bash
+cargo update
+```
+
+- This command will update your dependencies to the latest compatible versions based on the constraints specified in your `Cargo.toml` file.
+- To remove unused dependencies, you can use the `cargo fix` command:
+
+```bash
+cargo fix --allow-dirty
+```
+
+- This command will automatically remove any unused dependencies from your `Cargo.toml` file and update your code to reflect the changes.
+- To run a specific binary in a multi-binary project, use:
+
+```bash
+cargo run --bin my_binary
+```
+
+- This command will execute the specified binary within your project, allowing you to run different parts of your codebase as needed.
+- To build a release version of your project, use:
+
+```bash
+cargo build --release
+```
+
+- This command will compile your Rust code with optimizations enabled, resulting in a faster binary suitable for production use.
+- To clean up build artifacts and temporary files, use:
+
+```bash
+cargo clean
+```
+
+- This command will remove the `target` directory, which contains compiled binaries and other build artifacts, allowing you to start fresh with a clean build.
