@@ -392,3 +392,280 @@ cargo clean
 ```
 
 - This command will remove the `target` directory, which contains compiled binaries and other build artifacts, allowing you to start fresh with a clean build.
+
+### Enumerations
+
+- Data that can be one of the multiple different possibilities , --> Each Possibility is called a variant.
+- Provides information about your program to the compiler --> helping in creation of more robust code.
+
+```RUST
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+fn main() {
+    let direction = Direction::Up; // Creating an instance of the Direction enum
+    match direction {
+        Direction::Up => println!("Moving Up"),
+        Direction::Down => println!("Moving Down"),
+        Direction::Left => println!("Moving Left"),
+        Direction::Right => println!("Moving Right"),
+    }
+}
+
+// :: is used to access the enum variants
+// Enums can also have associated data, allowing you to store additional information with each variant
+enum Shape {
+    Circle(f64), // Circle with radius
+    Rectangle(f64, f64), // Rectangle with width and height
+    Triangle { base: f64, height: f64 }, // Triangle with named fields
+}
+
+fn main() {
+    let shape = Shape::Circle(5.0); // Creating an instance of the Shape enum with Circle variant
+    match shape {
+        Shape::Circle(radius) => println!("Circle with radius: {}", radius),
+        Shape::Rectangle(width, height) => println!("Rectangle with width: {}, height: {}", width, height),
+        Shape::Triangle { base, height } => println!("Triangle with base: {}, height: {}", base, height),
+    }
+}
+```
+
+- Enums can also implement methods, allowing you to define behavior associated with the enum variants.
+
+```RUST
+impl Shape {
+    fn area(&self) -> f64 {
+        match self {
+            Shape::Circle(radius) => std::f64::consts::PI * radius * radius,
+            Shape::Rectangle(width, height) => width * height,
+            Shape::Triangle { base, height } => 0.5 * base * height,
+        }
+    }
+}
+fn main() {
+    let shape = Shape::Rectangle(4.0, 5.0); // Creating an instance of the Shape enum with Rectangle variant
+    println!("Area of the shape: {}", shape.area()); // Calling the area method on the shape instance
+}
+```
+
+- `impl` is used to implement methods for the enum, allowing you to define behavior associated with the enum variants.
+
+### structs
+
+- A type that contains multiple pieces of data --> All or Nothing - cannot have some pieces of data and not others.
+- Each piece of data is called a field, and each field can have its own type.
+- Makes working with data easier by grouping related data together.
+- Structs can be defined using the `struct` keyword, followed by the struct name and its fields.
+- Fields can have explicit types, and the struct can also implement methods for behavior associated with the struct.
+- Structs can be used to create complex data types that represent real-world entities
+- Rust provides two types of structs: tuple structs and regular structs.
+- Tuple structs are similar to tuples, but they have a name and can have different types for each field.
+- Regular structs have named fields, allowing for more clarity and readability when accessing the data.
+
+```RUST
+// Tuple Struct Example
+struct Point(i32, i32); // A tuple struct with two fields of type i32
+fn main() {
+    let point = Point(3, 4); // Creating an instance of the Point tuple struct
+    println!("Point coordinates: ({}, {})", point.0, point.1); // Accessing fields using dot notation
+}
+// Regular Struct Example
+struct Rectangle {
+    width: f64, // Named field for width
+    height: f64, // Named field for height
+}
+fn main() {
+    let rect = Rectangle { width: 5.0, height: 10.0 }; // Creating an instance of the Rectangle struct
+    println!("Rectangle dimensions: {} x {}", rect.width, rect.height); // Accessing fields using dot notation
+}
+```
+
+- struct fields can have even enum as their type
+
+```RUST
+enum Color {
+    Red,
+    Green,
+    Blue,
+}
+struct Circle {
+    radius: f64,
+    color: Color, // Field of type Color enum
+}
+fn main() {
+    let circle = Circle {
+        radius: 5.0,
+        color: Color::Red, // Assigning a variant of the Color enum to the color
+    };
+    match circle.color { // use dot operator to access the color field
+        Color::Red => println!("Circle is Red"),
+        Color::Green => println!("Circle is Green"),
+        Color::Blue => println!("Circle is Blue"),
+    }
+}
+```
+
+### tuples
+
+- A type of record that can hold multiple values of different types.
+- Store data anonymously --> no need to name fields.
+- Useful to return pairs of data from functions or to group related values together.
+- Can be destructured easily into variables for easier access.
+- Tuples can be defined using parentheses `()` and can contain any number of elements, each with its own type.
+- Tuples can be used to group related data together, making it easier to pass multiple values around in your code.
+- Tuples can be nested, allowing you to create complex data structures by combining multiple tuples together.
+- Tuples can also be used as function parameters or return values, allowing you to return multiple values from a function without needing to define a custom struct or enum.
+- Tuples can be used to represent fixed-size collections of values, similar to arrays, but with the ability to have different types for each element.
+
+```RUST
+// Example of a tuple
+let person: (&str, i32) = ("Alice", 30); // A tuple with a string and an integer
+println!("Name: {}, Age: {}", person.0, person.1); // Accessing tuple elements using dot notation
+// Destructuring a tuple into variables
+let (name, age) = person; // Destructuring the tuple into two variables
+println!("Name: {}, Age: {}", name, age); // Using the destructured variables
+// Nested tuples
+let nested_tuple: ((i32, i32), (f64, f64)) = ((1, 2), (3.5, 4.5)); // A tuple containing two tuples
+let ((x1, y1), (x2, y2)) = nested_tuple; // Destructuring the nested tuple
+println!("Coordinates: ({}, {}), ({}, {})", x1, y1, x2, y2); // Using the destructured variables
+// Tuples as function parameters and return values
+fn calculate_area(dimensions: (f64, f64)) -> f64 {
+    dimensions.0 * dimensions.1 // Using the tuple elements to calculate area
+}
+let area = calculate_area((5.0, 10.0)); // Passing a tuple as a function argument
+println!("Area: {}", area); // Outputting the calculated area
+```
+
+### expressions
+
+- Rust is an expression-oriented language, meaning that most things are evaluated and return a value.
+- Expression values coalesce to a single point --> can be used for nesting logic
+- An expression is a piece of code that evaluates to a value.
+- Expressions can be used to perform calculations, create data structures, or call functions.
+- Rust expressions can be used in various contexts, such as assignments, function calls, and control flow statements.
+- Expressions can be combined to create more complex expressions, allowing for powerful and flexible code
+
+```rust
+
+let x = 3;
+let is_lt_5 = if x < 5 { true } else { false }; // This is an expression that evaluates to a boolean value
+let is_gt_5 = x>5;
+```
+
+### Intermediate Memory Representation (IMR)
+
+#### Basic Memory Refresh
+
+- Memory is stored in binary data, which is a sequence of bits (0s and 1s).
+- Computer optimised for bytes = 8 contiguous bits.
+- Fully contiguous
+
+#### Addresses
+
+- All data in memoory has an address -->
+  - Used to locate data in memory.
+  - Always the same - only data changes.
+- Usually dont utilize addresses directly --> Variables handle most of the work .
+
+#### Offsets
+
+- Offset is the distance from the start of a data structure to a specific element within it.
+- Items can be located at an address using an Offset
+- Offsets begin at 0
+- Represent the number the bytes away from the original address --> Narmally deal with indexes instead.
+
+#### Pointers
+
+- A pointer is a variable that stores the address of another variable.
+- Pointers are used to reference data in memory without copying it, allowing for efficient memory management
+- Pointers can be mutable or immutable, depending on whether you want to change the data they point to.
+- Rust has two types of pointers: references and raw pointers.
+- References are safe pointers that ensure memory safety by enforcing borrowing rules, while raw pointers are unsafe pointers that allow for more flexibility but require careful management to avoid memory issues.
+- Pointers can be dereferenced to access the data they point to, allowing you to read or modify the value stored at that address.
+- Rust's ownership model ensures that pointers are properly managed, preventing issues like dangling pointers or memory leaks.
+  - Pointers can also be used to create complex data structures, such as linked lists or trees, by allowing nodes to reference each other.
+
+```rust
+let x = 5; // A variable with a value of 5
+let y = &x; // A reference to the variable x
+println!("Value of x: {}, Value of y: {}", x, y); // Accessing the value of x and the reference y
+let mut z = 10; // A mutable variable
+let w = &mut z; // A mutable reference to the variable z
+*w += 5; // Modifying the value of z through the mutable reference w
+println!("Value of z: {}, Value of w: {}", z, w); // Accessing the modified value of z and the reference w
+```
+
+### Ownership and Borrowing
+
+#### Managing Memory
+
+- Programs must track memory --> If they fail to do so , a leak occurs
+- Rust utilizes an ownership model to manage memory safely and efficiently --> The owner of memory is responsible for cleaning up the memory.
+- Memory can either be moved or borrowed.
+- Ownership is a key concept in Rust that ensures memory safety without needing a garbage collector.
+- Each value in Rust has a single owner, which is responsible for managing the memory associated with that value.
+- When the owner goes out of scope, the memory is automatically cleaned up, preventing memory leaks and dangling pointers.
+- Ownership can be transferred (moved) from one variable to another, meaning that the original variable can no longer access the value.
+- Borrowing allows you to create references to a value without taking ownership, enabling multiple parts of the code to access the same data safely
+- Rust enforces strict rules about ownership and borrowing at compile time, ensuring that data is accessed safely and preventing common memory-related bugs.
+- Rust's ownership model also includes the concept of lifetimes, which helps the compiler understand how long references to data are valid, preventing dangling pointers and ensuring memory safety.
+
+```rust
+let x = String::from("Hello"); // x owns the String value
+let y = x; // Ownership is moved from x to y, x can no longer be used
+// println!("{}", x); // This would cause a compile-time error because x is no longer valid
+println!("{}", y); // y can be used to access the value
+let z = String::from("World"); // z owns the String value
+let w = &z; // w is a reference to z, borrowing the value without taking ownership
+println!("{}", w); // w can be used to access the value of z
+// z can still be used because ownership was not moved, only borrowed
+
+// move and borrow for functions
+fn takes_ownership(s: String) { // s takes ownership of the String value
+    println!("Taking ownership: {}", s);
+}
+fn borrows_reference(s: &String) { // s borrows a reference to the String value
+    println!("Borrowing reference: {}", s);
+}
+fn main() {
+    let my_string = String::from("Hello, Rust!"); // my_string owns the String value
+    takes_ownership(my_string); // Ownership is moved to the function
+    // println!("{}", my_string); // This would cause a compile-time error because my_string is no longer valid
+    let another_string = String::from("Hello, World!"); // another_string owns the String value
+    borrows_reference(&another_string); // Borrowing a reference to the String value
+    println!("{}", another_string); // another_string can still be used because ownership was not moved, only borrowed
+}
+```
+
+### Impl
+
+- The `impl` keyword is used to define methods and associated functions for a type, allowing you to add behavior to structs, enums, and other types.
+- It allows you to define methods that can be called on instances of the type, as well as associated functions that can be called without an instance.
+- Methods defined within an `impl` block can access the fields of the type and perform operations on them, enabling encapsulation and abstraction.
+
+```rust
+struct Circle {
+    radius: f64, // Field for the radius of the circle
+}
+impl Circle {
+    // Method to calculate the area of the circle
+    fn area(&self) -> f64 {
+        std::f64::consts::PI * self.radius * self.radius // Using the radius field to calculate area
+    }
+
+    // Associated function to create a new Circle instance
+    fn new(radius: f64) -> Circle {
+        Circle { radius } // Returning a new Circle instance with the given radius
+    }
+}
+fn main() {
+    let circle = Circle::new(5.0); // Creating a new Circle instance using the associated function
+    println!("Area of the circle: {}", circle.area()); // Calling the area method on the Circle instance
+}
+```
+
+- Have the name of type they are implemented for and the `impl` name same as the type binding is required.
