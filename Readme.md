@@ -584,7 +584,7 @@ let is_gt_5 = x>5;
 - Pointers are used to reference data in memory without copying it, allowing for efficient memory management
 - Pointers can be mutable or immutable, depending on whether you want to change the data they point to.
 - Rust has two types of pointers: references and raw pointers.
-- References are safe pointers that ensure memory safety by enforcing borrowing rules, while raw pointers are unsafe pointers that allow for more flexibility but require careful management to avoid memory issues.
+- References are safe pointers that ensure memory safety by enforcing borrowing rule s, while raw pointers are unsafe pointers that allow for more flexibility but require careful management to avoid memory issues.
 - Pointers can be dereferenced to access the data they point to, allowing you to read or modify the value stored at that address.
 - Rust's ownership model ensures that pointers are properly managed, preventing issues like dangling pointers or memory leaks.
   - Pointers can also be used to create complex data structures, such as linked lists or trees, by allowing nodes to reference each other.
@@ -658,14 +658,80 @@ impl Circle {
     }
 
     // Associated function to create a new Circle instance
-    fn new(radius: f64) -> Circle {
-        Circle { radius } // Returning a new Circle instance with the given radius
+    fn new(radius: f64) -> Self {
+        Self { radius } // Returning a new Circle instance with the given radius
     }
 }
 fn main() {
     let circle = Circle::new(5.0); // Creating a new Circle instance using the associated function
     println!("Area of the circle: {}", circle.area()); // Calling the area method on the Circle instance
 }
+// if Self is used in the impl block, it refers to the type being implemented, allowing for more concise code when defining methods and associated functions.
 ```
 
 - Have the name of type they are implemented for and the `impl` name same as the type binding is required.
+
+### Vectors
+
+- A vector is a dynamically sized array that can grow or shrink in size as needed.
+- Vectors are implemented as a contiguous block of memory, allowing for efficient access to elements.
+- Vectors can store elements of the same type and provide methods for adding, removing, and accessing elements.
+- Vectors are part of the Rust standard library and can be used by importing the `std::vec` module.
+
+```rust
+use std::vec::Vec; // Importing the Vec type from the standard library
+fn main() {
+    let mut numbers: Vec<i32> = Vec::new(); // Creating a new empty vector of i32 type OR vec![1, 2, 3] can also be used to create a vector with initial values
+    numbers.push(1); // Adding an element to the vector
+    numbers.push(2); // Adding another element to the vector
+    numbers.push(3); // Adding a third element to the vector
+
+    println!("Numbers: {:?}", numbers); // Printing the contents of the vector
+
+    // Accessing elements in the vector using indexing
+    for i in 0..numbers.len() {
+        println!("Element at index {}: {}", i, numbers[i]);
+    }
+
+    // Removing an element from the vector
+    let removed_element = numbers.pop(); // Removes the last element and returns it
+    println!("Removed element: {:?}", removed_element);
+    println!("Numbers after removal: {:?}", numbers);
+}
+```
+
+`Always use references to access elements , be it a function or for loop or anything , as in move it WILL get cleared up`
+
+### Strings
+
+- Two commonly used types of strings
+  - String : A growable, heap-allocated string type that can be modified and resized.
+  - &str : A string slice that represents a view into a string, typically used for read-only access to string data.
+- Strings are used to represent text data in Rust, and they can be manipulated using various methods provided by the `String` and `&str` types.
+- Strings can be created from string literals, converted from other types, or constructed using various methods.
+- Strings can be concatenated, sliced, and modified using methods like `push`, `push_str`, and `replace`.
+- String slices (`&str`) are often used for function parameters and return values
+- String slices are more efficient for read-only access to string data, as they do not require ownership or allocation.
+- Rust provides various methods for working with strings, such as `len`, `is_empty`, `to_uppercase`, and `to_lowercase`, allowing for easy manipulation and formatting of string data.
+- Must use an owned String to store in a `struct`
+
+```rust
+fn main() {
+    let mut my_string = String::from("Hello"); // Creating a new String
+    my_string.push_str(", Rust!"); // Appending a string slice to the String
+    println!("My string: {}", my_string); // Printing the contents of the String
+
+    let my_str: &str = "This is a string slice"; // Creating a string
+    // can be converted using .to_owned()
+    println!("String slice: {}", my_str); // Printing the contents of the string slice
+
+    // Concatenating two strings
+    let another_string = String::from(" Welcome to Rust programming.");
+    let concatenated = my_string + &another_string; // Using the + operator to concatenate strings
+    println!("Concatenated string: {}", concatenated);
+
+    // Slicing a string
+    let sliced = &my_string[0..5]; // Slicing the first 5 characters of the String
+    println!("Sliced string: {}", sliced);
+}
+```
