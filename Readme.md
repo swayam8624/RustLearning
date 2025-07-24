@@ -1,5 +1,7 @@
 # Rust
 
+## BASICS
+
 ### Introduction
 
 - Rust is a systems programming language that runs fast, prevents segfaults, and guarantees thread safety
@@ -226,7 +228,7 @@ fn main() {
 
 ```
 
-### Comments
+### Comments & Documentation
 
 - Comments are used to add explanatory notes or documentation within the code, making it easier to understand
 - Rust supports two types of comments:
@@ -735,3 +737,345 @@ fn main() {
     println!("Sliced string: {}", sliced);
 }
 ```
+
+### Derive
+
+- The `derive` attribute is used to automatically implement certain traits for a struct or enum, reducing boilerplate code and improving code readability.
+- It allows you to derive common traits like `Debug`, `Clone`, `PartialEq`, `Eq`, `Hash`, and more, without having to manually implement them.
+- The `derive` attribute is placed above the struct or enum definition and specifies the traits to be derived.
+- Deriving traits can be useful for debugging, comparing values, hashing, and other common operations.
+- The `derive` attribute can be used with multiple traits at once, separated by commas.
+
+```rust
+#[derive(Debug, Clone, PartialEq)] // Deriving Debug, Clone, and PartialEq
+struct Person {
+    name: String,
+    age: u32,
+}
+fn main() {
+    let person1 = Person {
+        name: String::from("Alice"),
+        age: 30,
+    };
+    let person2 = person1.clone(); // Cloning the person1 instance
+    println!("Person 1: {:?}", person1); // Using the Debug trait to print the person1 instance
+    println!("Person 2: {:?}", person2); // Using the Debug trait to print the person2 instance
+
+    // Comparing two instances using PartialEq
+    if person1 == person2 {
+        println!("Person 1 and Person 2 are equal.");
+    } else {
+        println!("Person 1 and Person 2 are not equal.");
+    }
+}
+```
+
+- Suppose a struct is using derive and it has some other struct or enum as a field, then the derived traits must also be implemented for that struct or enum.
+- The `derive` attribute can also be used with custom traits, allowing you to define your own traits and automatically implement them for your types.
+
+```rust
+// custom trait
+trait Greet {
+    fn greet(&self) -> String; // Method to return a greeting message
+}
+// Implementing the Greet trait for the Person struct
+impl Greet for Person {
+    fn greet(&self) -> String {
+        format!("Hello, my name is {} and I am {} years old.", self.name, self.age)
+    }
+}
+fn main() {
+    let person = Person {
+        name: String::from("Bob"),
+        age: 25,
+    };
+    println!("{}", person.greet()); // Calling the greet method on the person instance
+}
+```
+
+### Type annotations
+
+- Required for the function signatures
+- Types are usually inferred by the compiler, but sometimes explicit type annotations are needed to clarify the intended type.
+- Type annotations can be used to specify the type of a variable, function parameter, or return type.
+- Type annotations are written using a colon (`:`) followed by the type name.
+
+```rust
+let x: i32 = 5; // Explicitly annotating the type of x as i32
+let y: f64 = 3.14; // Explicitly annotating the type of y as f64
+fn add(a: i32, b: i32) -> i32 { // Function with type annotations for parameters and return type
+    a + b // Implicit return, no semicolon needed
+}
+fn main() {
+    let result: i32 = add(x, y as i32); // Explicitly annotating the type of result as i32
+    println!("Result: {}", result); // Outputting the result
+}
+```
+
+### generics
+
+- Generics allow you to write code that can work with different types without sacrificing type safety.
+- They enable you to create functions, structs, enums, and traits that can operate on multiple types while maintaining the same logic.
+- Generics are defined using angle brackets (`<T>`), where `T` is a placeholder for the type that will be specified when the code is used.
+- Generics can be used to create reusable code that can handle different data types, making your code more flexible and adaptable.
+- Rust's type system ensures that generic types are checked at compile time, preventing runtime errors and ensuring type safety.
+- Generics can be used with traits to create polymorphic code that can work with any type that implements the specified trait.
+- You can also specify constraints on generic types using trait bounds, allowing you to restrict the types that can be used with your generic code.
+
+```rust
+// Generic function example
+fn print_value<T: std::fmt::Debug>(value: T) { // T is a generic type that implements the Debug trait
+    println!("{:?}", value); // Using the Debug trait to print the value
+}
+fn main() {
+    let x = 42; // An integer value
+    let y = "Hello, Rust!"; // A string value
+    print_value(x); // Calling the generic function with an integer
+    print_value(y); // Calling the generic function with a string
+}
+// Generic struct example
+struct Pair<T, U> { // T and U are generic types
+    first: T, // First element of type T
+    second: U, // Second element of type U
+}
+impl<T, U> Pair<T, U> { // Implementing methods for the generic Pair
+    fn new(first: T, second: U) -> Self { // Associated function to create a new Pair
+        Self { first, second } // Returning a new Pair instance
+    }
+    fn first(&self) -> &T { // Method to get a reference to the first element
+        &self.first // Returning a reference to the first element
+    }
+    fn second(&self) -> &U { // Method to get a reference to the second element
+        &self.second // Returning a reference to the second element
+    }
+}
+fn main() {
+    let pair = Pair::new(1, "Rust"); // Creating a new Pair with an integer and a string
+    println!("First: {}, Second: {}", pair.first(), pair.second()); // Accessing the elements of the Pair
+}
+```
+
+### Option
+
+- A type that may be one of the two things -->
+  - Some data of a specific type
+  - None, indicating the absence of a value.
+- Used in scenarios where data may not be required or is unavailable.-->
+  - Unable to find something
+  - Ran out of items in a list
+  - Form field not filled out
+- Provides a way to handle optional values without resorting to null pointers or undefined behavior.
+- The `Option` type is defined in the standard library and can be used with any type.
+- The `Option` type is defined as an enum with two variants: `Some(T)` for a value of type `T`, and `None` for the absence of a value.
+
+```rust
+enum Option<T> {
+    Some(T), // Contains a value of type T
+    None, // Represents the absence of a value
+}
+```
+
+- The `Option` type provides methods for working with optional values, such as `is_some`, `is_none`, `map`, `and_then`, and `unwrap`.
+- The `Option` type can be used in function parameters and return types to indicate that a value may or may not be present.
+
+```rust
+fn find_item(items: &[&str], target: &str) -> Option<&str> {
+    for &item in items {
+        if item == target {
+            return Some(item); // Return Some(item) if the item is found
+        }
+    }
+    None // Return None if the item is not found
+}
+fn main() {
+    let items = ["apple", "banana", "orange"];
+    let target = "banana";
+    match find_item(&items, target) {
+        Some(item) => println!("Found: {}", item), // Handle the case where the item is found
+        None => println!("Item not found"), // Handle the case where the item is not found
+    }
+}
+// Example for methods on Option
+fn main() {
+    let some_value: Option<i32> = Some(42); // Creating an Option with a value
+    let none_value: Option<i32> = None; // Creating an Option without a value
+    // Using is_some and is_none methods
+    if some_value.is_some() {
+        println!("Some value is present: {:?}", some_value); // This will print the Some value
+    }
+    if none_value.is_none() {
+        println!("No value present"); // This will print because none_value is None
+    }
+    // Using map method to transform the value inside Some
+    let transformed_value = some_value.map(|x| x * 2); // This will double the value inside Some
+    println!("Transformed value: {:?}", transformed_value); // This will print Some(84)
+    // Using and_then method to chain operations on Option
+    let chained_value = some_value.and_then(|x| if x > 40 { Some(x + 10) } else { None }); // This will add 10 if the value is greater than 40
+    println!("Chained value: {:?}", chained_value); // This will print Some(52)
+    // Using unwrap method to get the value inside Some
+    let unwrapped_value = some_value.unwrap(); // This will return the value inside Some
+    println!("Unwrapped value: {}", unwrapped_value); // This will print 42
+    // Using unwrap_or method to provide a default value if None
+    let default_value = none_value.unwrap_or(0); // This will return 0 if none_value is None
+    println!("Default value: {}", default_value); // This will print 0
+}
+```
+
+### Standard Library
+
+- Rust's standard library provides a wide range of functionality, including data structures, algorithms, and utilities for common tasks.
+- The standard library is automatically included in every Rust project, and you can use its features without needing to add any external dependencies.
+- The standard library includes modules for collections, I/O, threading, error handling, and more, making it a powerful tool for building Rust applications.
+- The standard library is designed to be efficient and safe, providing high-performance implementations of common data structures like vectors, hash maps, and sets.
+- You can access the standard library's features by importing the relevant modules using the `use` keyword.
+- The standard library is well-documented, and you can find detailed information about its features and usage in the official Rust documentation.
+- The standard library is continuously evolving, with new features and improvements being added in each Rust release, ensuring that it remains a robust and reliable foundation for Rust development.
+
+```rust
+// utilizing some fuctions like for string manipulation
+fn main() {
+    let my_string = String::from("Hello, Rust!"); // Creating a new String
+    let uppercased = my_string.to_uppercase(); // Converting the string to uppercase
+    println!("Uppercased string: {}", uppercased); // Printing the uppercased string
+    let trimmed = my_string.trim(); // Trimming whitespace from the string
+    println!("Trimmed string: {}", trimmed); // Printing the trimmed string
+    let split: Vec<&str> = my_string.split(", ").collect(); // Splitting the string into a vector of substrings
+    println!("Split string: {:?}", split); // Printing
+    // Printing the vector of substrings
+    let replaced = my_string.replace("Rust", "World"); // Replacing a substring in the string
+    println!("Replaced string: {}", replaced); // Printing the replaced string
+    let contains_rust = my_string.contains("Rust"); // Checking if the string contains a substring
+    println!("Contains 'Rust': {}", contains_rust); // Printing the result of the contains check
+    let length = my_string.len(); // Getting the length of the string
+    println!("Length of the string: {}", length); // Printing the length of the string
+    let is_empty = my_string.is_empty(); // Checking if the string is empty
+    println!("Is the string empty? {}", is_empty); // Printing the result of the is_empty check
+}
+```
+
+- The standard library also provides traits that can be implemented for custom types, allowing you to extend the functionality of your types and integrate them with the standard library's features.
+- You can find the complete documentation for the Rust standard library at [docs.rs](https://docs.rs/std/), which provides detailed information about each module, type, and function available in the standard library.
+
+### Result
+
+- A Data type that contains one of the two types of values -->
+  - Ok(T) : Contains a value of type T, indicating success.
+  - Err(E) : Contains an error value of type E, indicating failure.
+- Used in scenarios where an action needs to be taken , but has a possibility of failure -->
+  - File operations
+  - Network requests
+  - Parsing data
+- Provides a way to handle errors gracefully without using exceptions or panic.
+- The `Result` type is defined in the standard library and can be used with any type
+
+```rust
+enum Result<T, E> {
+    Ok(T), // Contains a value of type T
+    Err(E), // Contains an error value of type E
+}
+```
+
+- The `Result` type provides methods for working with results, such as `is_ok`, `is_err`, `map`, `and_then`, and `unwrap`.
+- The `Result` type can be used in function parameters and return types to indicate that a function may succeed or fail.
+- The `Result` type is commonly used in Rust for error handling, allowing you to propagate errors up the call stack and handle them appropriately.
+- The `Result` type can be used with the `?` operator to simplify error handling by automatically propagating errors to the caller.
+
+```rust
+fn divide(a: f64, b: f64) -> Result<f64, String> {
+    if b == 0.0 {
+        Err(String::from("Division by zero error")) // Return an error if b is zero
+    } else {
+        Ok(a / b) // Return the result of the division
+    }
+}
+fn main() {
+    match divide(10.0, 2.0) {
+        Ok(result) => println!("Result: {}", result), // Handle the case where the division is successful
+        Err(e) => println!("Error: {}", e), // Handle the case where the division fails
+    }
+    match divide(10.0, 0.0) {
+        Ok(result) => println!("Result: {}", result), // This will not be executed because the division fails
+        Err(e) => println!("Error: {}", e), // This will print "Error: Division by zero error"
+    }
+}
+// Example for methods on Result
+fn main() {
+    let success: Result<i32, &str> = Ok(42); // Creating a Result with a success value
+    let failure: Result<i32, &str> = Err("An error occurred"); // Creating a Result with an error value
+    // Using is_ok and is_err methods
+    if success.is_ok() {
+        println!("Success value: {:?}", success); // This will print the success value
+    }
+    if failure.is_err() {
+        println!("Error value: {:?}", failure); // This will print the error value
+    }
+    // Using map method to transform the success value
+    let transformed_success = success.map(|x| x * 2); // This will double the success
+    println!("Transformed success value: {:?}", transformed_success); // This will print Ok(84)
+    // Using and_then method to chain operations on Result
+    let chained_success = success.and_then(|x| if x > 40 { Ok(x + 10) } else { Err("Value is too small") }); // This will add 10 if the value is greater than 40
+    println!("Chained success value: {:?}", chained_success); // This will print Ok(52)
+    // Using unwrap method to get the success value
+    let unwrapped_success = success.unwrap(); // This will return the success value
+    println!("Unwrapped success value: {}", unwrapped_success); // This will print 42
+    // Using unwrap_or method to provide a default value if Err
+    let default_value = failure.unwrap_or(0); // This will return 0 if failure is Err
+    println!("Default value: {}", default_value); // This will print 0
+
+    // using with ? operator
+    let result = divide(10.0, 2.0)?; // Using the ? operator to propagate errors
+    println!("Result of division: {}", result); // This will print the result of the division
+    let result = divide(10.0, 0.0)?; // This will propagate the error and exit the function
+    println!("Result of division: {}", result); // This line will not be executed because the previous line caused an error
+}
+
+```
+
+### HashMaps
+
+- A HashMap is a collection of key-value pairs that allows for fast lookups, insertions, and deletions based on keys.
+- It is implemented as a hash table, which uses a hash function to map keys to indices in an underlying array.
+- HashMaps are part of the Rust standard library and can be used by importing the `std::collections::HashMap` module.
+- HashMaps can store values of any type, as long as the keys implement the `Hash` and `Eq` traits.
+- The `HashMap` type provides methods for inserting, removing, and accessing key-value pairs, as well as iterating over the entries in the map.
+- HashMaps are useful for scenarios where you need to associate values with unique keys, such as counting occurrences of items, caching results, or implementing dictionaries.
+- HashMaps can handle collisions (when two keys hash to the same index) using techniques like chaining or open addressing.
+- The performance of HashMaps is generally O(1) for lookups, insertions, and deletions on average, making them efficient for many use cases.
+- You can create a HashMap using the `HashMap::new()` method, and you can insert key-value pairs using the `insert` method.
+- To access a value by its key, you can use the `get` method, which returns an `Option` type indicating whether the key exists in the map.
+- You can also check if a key exists using the `contains_key` method, and you can remove a key-value pair using the `remove` method.
+
+```rust
+use std::collections::HashMap; // Importing the HashMap type from the standard library
+fn main() {
+    let mut scores: HashMap<String, i32> = HashMap::new(); // Creating a new empty HashMap with String keys and i32 values
+    scores.insert(String::from("Alice"), 10); // Inserting a key-value pair into the HashMap
+    scores.insert(String::from("Bob"), 20); // Inserting another key-value pair into the HashMap
+    scores.insert(String::from("Charlie"), 15); // Inserting a third key-value pair into the HashMap
+    println!("Scores: {:?}", scores); // Printing the contents of the HashMap
+    // Accessing values in the HashMap using keys
+    if let Some(score) = scores.get("Alice") {
+        println!("Alice's score: {}", score); // This will print Alice's score
+    } else {
+        println!("Alice not found in scores"); // This will print if Alice is not found
+    }
+    // Iterating over the key-value pairs in the HashMap
+    for (name, score) in &scores { // can use .iter , .keys , .values() as well
+        println!("{}: {}", name, score); // Printing each key-value pair in the Hash
+    }Map
+    // Removing a key-value pair from the HashMap
+    scores.remove("Bob"); // Removing Bob's score from the HashMap
+    println!("Scores after removing Bob: {:?}", scores); // Printing the contents of the HashMap
+    // Checking if a key exists in the HashMap
+    if scores.contains_key("Charlie") {
+        println!("Charlie is in the scores"); // This will print if Charlie is found
+    } else {
+        println!("Charlie not found in scores"); // This will print if Charlie is not found
+    }
+    // Getting the number of key-value pairs in the HashMap
+    let count = scores.len(); // Getting the number of key-value pairs in the HashMap
+    println!("Number of scores: {}", count); // Printing the number of key-value pairs in the HashMap
+}
+```
+
+## Crust Of Rust
