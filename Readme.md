@@ -558,6 +558,18 @@ let is_lt_5 = if x < 5 { true } else { false }; // This is an expression that ev
 let is_gt_5 = x>5;
 ```
 
+### Delimeters
+
+- Delimiters are special characters used in Rust to group code and define the structure of the program.
+- They are used to indicate the beginning and end of blocks of code, such as functions, loops, conditionals, and modules.
+- Common delimiters in Rust include curly braces `{}`, parentheses `()`, and square brackets `[]`.
+- Curly braces `{}` are used to define blocks of code, such as function bodies, loop bodies, and module definitions.
+- Parentheses `()` are used to group expressions, define function parameters, and call functions.
+- Square brackets `[]` are used to define arrays, slices, and indexing operations.
+- Delimiters help the Rust compiler understand the structure of the code and enforce syntax rules, ensuring that the code is well-formed and can be executed correctly.
+- Proper use of delimiters is essential for writing valid Rust code, as mismatched or missing delimiters can lead to compilation errors.
+- Rust's syntax is designed to be clear and concise, with delimiters playing a crucial role in defining the flow and organization of the code .
+
 ### Intermediate Memory Representation (IMR)
 
 #### Basic Memory Refresh
@@ -672,6 +684,13 @@ fn main() {
 ```
 
 - Have the name of type they are implemented for and the `impl` name same as the type binding is required.
+
+### Traits
+
+- Traits are a way to define shared behavior in Rust, allowing you to specify a set of methods that types must implement.
+- They are similar to interfaces in other programming languages, providing a way to define common functionality that can be shared across different types.
+- Traits can be used to define methods that types must implement, allowing you to create polymorphic code that can work with any type that implements the specified trait.
+- You can define your own traits using the `trait` keyword, and you can implement traits for existing types or your own custom types.
 
 ### Vectors
 
@@ -1079,3 +1098,154 @@ fn main() {
 ```
 
 ## Crust Of Rust
+
+### Warn
+
+- The `warn` attribute is used to generate warnings during compilation, allowing you to identify potential issues in your code without causing a compilation error.
+- Warnings can help you catch mistakes, such as unused variables, deprecated features, or potential performance issues.
+- The `warn` attribute can be applied to functions, modules, or specific code blocks to indicate that the code may have issues that should be addressed.
+- Warnings do not prevent the code from compiling, but they serve as a reminder to review and improve the code.
+- You can configure the behavior of warnings using command-line flags or by modifying the `Cargo.toml` file
+- Warnings can be suppressed or promoted to errors using the `allow` and `deny` attributes, respectively, allowing you to control how warnings are handled in your project.
+- The Rust compiler provides detailed messages for warnings, including the location of the issue and suggestions for resolving it.
+- It is a good practice to address warnings in your code to maintain code quality and ensure that your code adheres to best practices.
+
+### pub , crate, self, super
+
+- The `pub` keyword is used to make items (functions, structs, enums, etc.) public, allowing them to be accessed from outside the current module or crate.
+- The `crate` keyword refers to the current crate, which is the entire package of Rust code being compiled. It can be used to access items defined in the root of the crate or in other modules within the crate.
+- The `self` keyword refers to the current module or crate, allowing you to access items defined in the same module or crate without needing to specify the module path.
+- The `super` keyword refers to the parent module of the current module, allowing you to access items defined in the parent module without needing to specify the full path.
+- These keywords are used to control visibility and access to items in Rust, enabling you to organize your code into modules and control how items are exposed to other parts of your codebase.
+- They are particularly useful for managing the visibility of items in larger projects, allowing you to create a clear hierarchy of modules and control access to items based on their visibility.
+
+```rust
+mod my_module {
+    pub fn public_function() {
+        println!("This is a public function.");
+    }
+    fn private_function() {
+        println!("This is a private function.");
+    }
+    pub mod nested_module {
+        pub fn nested_function() {
+            println!("This is a function in a nested module.");
+        }
+    }
+}
+fn main() {
+    my_module::public_function(); // Accessing a public function from the module
+    // my_module::private_function(); // This would cause a compile-time error because private_function is private
+    my_module::nested_module::nested_function(); // Accessing a function in a nested module
+    // Using crate, self, and super keywords
+    crate::my_module::public_function(); // Accessing a public function using the crate keyword
+    self::my_module::public_function(); // Accessing a public function using the self keyword
+    super::my_module::public_function(); // Accessing a public function using the super keyword
+    // Note: super can only be used within a module that has a parent module
+}
+// example of using super between 2 classes
+mod parent_module {
+    pub fn parent_function() {
+        println!("This is a function in the parent module.");
+    }
+    pub mod child_module {
+        pub fn child_function() {
+            println!("This is a function in the child module.");
+            super::parent_function(); // Accessing a function from the parent module
+        }
+    }
+}
+fn main() {
+    parent_module::child_module::child_function(); // Calling the child function, which accesses the parent function
+}
+```
+
+### mod , use, and import
+
+- The `mod` keyword is used to define a module in Rust, which is a way to organize code into separate namespaces. Modules can contain functions, structs, enums, and other items, allowing you to group related functionality together.
+- The `use` keyword is used to bring items from a module into the current scope, allowing you to access them without needing to specify the full path.
+- The `import` keyword is not used in Rust; instead, you use the `use` keyword to bring items into scope.
+- Modules can be defined in separate files or inline within the same file, and you can create a hierarchy of modules by nesting them within each other.
+
+```rust
+mod my_module {
+    pub fn my_function() {
+        println!("This is a function in my_module.");
+    }
+}
+fn main() {
+    my_module::my_function(); // Calling a function from the module
+    use my_module::my_function; // Bringing the function into scope
+    my_function(); // Now we can call it without specifying the module path
+}
+```
+
+- You can also use the `use` keyword to bring multiple items into scope at once, allowing you to simplify your code and avoid repetitive module paths.
+- The `mod` keyword can also be used to define submodules, allowing you to create a hierarchy of modules and organize your code more effectively.
+- When using the `use` keyword, you can also create aliases for items, allowing you to refer to them with a different name in your code.
+
+```rust
+// Inheritance in Rust via traits
+mod shapes {
+    pub trait Shape {
+        fn area(&self) -> f64; // Method to calculate the area of the shape
+    }
+    pub struct Circle {
+        pub radius: f64, // Field for the radius of the circle
+    }
+    impl Shape for Circle {
+        fn area(&self) -> f64 {
+            std::f64::consts::PI * self.radius * self.radius // Using the radius field to calculate area
+        }
+    }
+    pub struct Rectangle {
+        pub width: f64, // Field for the width of the rectangle
+        pub height: f64, // Field for the height of the rectangle
+    }
+    impl Shape for Rectangle {
+        fn area(&self) -> f64 {
+            self.width * self.height // Using the width and height fields to calculate area
+        }
+    }
+}
+use shapes::{Shape, Circle, Rectangle}; // Bringing the Shape trait and Circle and Rectangle structs into scope
+fn main() {
+    let circle = Circle { radius: 5.0 }; // Creating a new Circle instance
+    let rectangle = Rectangle { width: 4.0, height: 6.0 }; // Creating a new Rectangle instance
+    println!("Area of the circle: {}", circle.area()); // Calling the area method on the Circle instance
+    println!("Area of the rectangle: {}", rectangle .area()); // Calling the area method on the Rectangle instance
+}
+
+```
+
+### assert_eq!
+
+- The `assert_eq!` macro is used in Rust to check that two expressions are equal during testing or debugging.
+- If the values are not equal, the macro will panic and display an error message showing the expected and actual values.
+- Commonly used in unit tests to verify that code produces the expected results.
+- Example:
+  ```rust
+  assert_eq!(2 + 2, 4); // Passes, no panic
+  assert_eq!(my_function(), expected_value); // Checks if the function output matches the expected value
+  ```
+
+### into_iter()
+
+- The `into_iter()` method is used to convert a collection into an iterator that takes ownership of the elements.
+- When called on a collection like a vector, it consumes the collection and yields each element by value, allowing you to move or modify the elements.
+- Useful for transforming, filtering, or collecting elements into a new collection.
+- Example:
+  `rust`
+
+### Lifetime Annotations
+
+- Lifetime annotations are a way to specify how long references to data are valid in Rust, ensuring memory safety and preventing dangling pointers.
+- They are used to indicate the relationship between the lifetimes of references and the data they point to.
+- Lifetime annotations are written using an apostrophe (`'`) followed by a name, such as `'a`, and are placed in function signatures, struct definitions, or enum definitions.
+- Lifetime annotations help the Rust compiler understand how long references are valid, allowing it to enforce rules about borrowing and ownership.
+- They are particularly useful when dealing with multiple references to the same data, ensuring that the references do not outlive the data they point to.
+- Lifetime annotations can be used to specify that a reference must live at least as long as another reference, or that a reference must not outlive the data it points to.
+- They are not used to specify the actual lifetime of data, but rather to express relationships between lifetimes of references.
+- Lifetime annotations are optional in many cases, as the Rust compiler can often infer lifetimes automatically. However, they become necessary when the compiler cannot determine the relationships between references on its own.
+
+## Advanced Rust
